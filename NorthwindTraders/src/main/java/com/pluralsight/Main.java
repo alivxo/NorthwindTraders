@@ -2,12 +2,24 @@ package com.pluralsight;
 import java.sql.*;
 import java.util.Scanner;
 
+import static com.pluralsight.DataSource.dataSource;
+
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     final static Scanner scanner = new Scanner (System.in);
     public static void main(String[] args) {
+        try (Connection connection = dataSource.getConnection()) {
+            // 1. Open a connection to the database
+            Statement statement = connection.createStatement();
+
+            // (Rest of the code...)
+
+        } catch (SQLException e) {
+            System.out.println("Connection failed.");
+            e.printStackTrace();
+        }
         homeScreen();
         }
 
