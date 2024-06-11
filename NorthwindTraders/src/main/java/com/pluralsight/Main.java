@@ -27,25 +27,37 @@ public class Main {
             Statement statement = connection.createStatement();
 
             // Define your query
-            String query = "SELECT * FROM customerdemographics ";
+            String query = "SELECT ProductID, ProductName, UnitPrice, UnitsInStock FROM products";
 
-            // 2. Execute your query
+            // Execute your query
             ResultSet results = statement.executeQuery(query);
 
+            System.out.println("Northwind Traders Products");
             // Process the results
             while (results.next()) {
+//                int productID = results.getInt("ProductID");
+//                String productName = results.getString("ProductName");
+//                int supplierID = results.getInt("SupplierID");
+//                int categoryID = results.getInt("CategoryID");
+//                String quantityPerUnit = results.getString("QuantityPerUnit");
+//                double unitPrice = results.getDouble("UnitPrice");
+//                int unitsInStock = results.getInt("UnitsInStock");
+//                int unitsOnOrder = results.getInt("UnitsOnOrder");
+//
+//                System.out.println("ProductID: " + productID + ", ProductName: " + productName +
+//                        ", SupplierID: " + supplierID + ", CategoryID: " + categoryID + ", QuantityPerUnit: "
+//                        + quantityPerUnit + ", UnitPrice: " + unitPrice + ", UnitsInStock: " + unitsInStock );
+
                 int productID = results.getInt("ProductID");
                 String productName = results.getString("ProductName");
-                int supplierID = results.getInt("SupplierID");
-                int categoryID = results.getInt("CategoryID");
-                String quantityPerUnit = results.getString("QuantityPerUnit");
                 double unitPrice = results.getDouble("UnitPrice");
                 int unitsInStock = results.getInt("UnitsInStock");
-                int unitsOnOrder = results.getInt("UnitsOnOrder");
 
-                System.out.println("ProductID: " + productID + ", ProductName: " + productName +
-                        ", SupplierID: " + supplierID + ", CategoryID: " + categoryID + ", QuantityPerUnit: "
-                        + quantityPerUnit + ", UnitPrice: " + unitPrice + ", UnitsInStock: " + unitsInStock );
+                System.out.println("Product ID: " + productID);
+                System.out.println("Name: " + productName);
+                System.out.println("Price: " + unitPrice);
+                System.out.println("Stock: " + unitsInStock);
+                System.out.println("------------------");
 
             }
 
