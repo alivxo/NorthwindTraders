@@ -1,9 +1,5 @@
 package com.pluralsight;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
 
 
@@ -22,6 +18,7 @@ public class Main {
                 What do you want to do?
                 1. Display all products
                 2. Display all customers
+                3. Display all categories
                 0. Exit 
                 Select an option:
                 """;
@@ -38,6 +35,9 @@ public class Main {
                     case "2":
                         displaycustomers();
                         break;
+                    case "3":
+                        displayallCategories();
+                        break;
                     case "0":
                         choice = false;
                         break;
@@ -49,23 +49,23 @@ public class Main {
 
     private static void displaycustomers() {
         String url = "jdbc:mysql://localhost:3306/northwind";
-        String username = "yourUsername"; // Replace with your MySQL username
-        String password = "yourPassword"; // Replace with your MySQL password
+        String username = "root";
+        String password = "YUm15510n";
 
         try {
             // Load the MySQL Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // 1. Open a connection to the database
+            // Open a connection to the database
             Connection connection = DriverManager.getConnection(url, username, password);
 
-            // 2. Create a statement
+            // Create a statement
             Statement statement = connection.createStatement();
 
-            // 3. Define your query
+            // Define your query
             String query = "SELECT CustomerID, CompanyName, ContactName, Country FROM customers";
 
-            // 4. Execute your query
+            // Execute your query
             ResultSet results = statement.executeQuery(query);
 
             System.out.println("Northwind Trader Customer Information");
@@ -85,7 +85,7 @@ public class Main {
                 System.out.println("City: " + city);
                 System.out.println("------------------");
             }
-            // 5. Close the connection
+            // Close the connection
             connection.close();
         } catch (ClassNotFoundException e) {
             System.out.println("MySQL JDBC Driver not found.");
@@ -99,7 +99,7 @@ public class Main {
 
     private static void displayproducts() {
 
-    String url = "jdbc:mysql://localhost:3306/northwind";
+        String url = "jdbc:mysql://localhost:3306/northwind";
         String username = "root";
         String password = "YUm15510n";
 
@@ -161,5 +161,70 @@ public class Main {
         }
     }
 
+    private static void displayallCategories() {
+        String url = "jdbc:mysql://localhost:3306/northwind";
+        String username = "root";
+        String password = "YUm15510n";
 
+        try {
+            // Load the MySQL Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            try (Connection connection = DriverManager.getConnection(url, username, password);
+                 Statement categoryStatement = connection.createStatement();
+                 Scanner scanner = new Scanner(System.in)) {
+
+                // Query the Categories table
+                String categoryQuery = "SELECT CategoryID, CategoryName, Description FROM categories ORDER BY CategoryID";
+                ResultSet categoryResults = categoryStatement.executeQuery(categoryQuery);
+
+                // Display categories
+                System.out.println("Categories:");
+                while (categoryResults.next()) {
+                    int categoryId = categoryResults.getInt("CategoryID");
+                    String categoryName = categoryResults.getString("CategoryName");
+                    String description = categoryResults.getString("Description");
+
+                    System.out.println("Category ID: " + categoryId);
+                    System.out.println("Name: " + categoryName);
+                    System.out.println("Description: " + description);
+                    System.out.println("------------------");
+                }
+
+                // Prompt user for a category ID
+                System.out.print("Enter a category ID to display all products in that category: ");
+                int categoryId = scanner.nextInt();
+
+                // Query the Products table for the selected category
+                String productQuery = "SELECT ProductID, ProductName, UnitPrice, UnitsInStock " +
+                        "FROM products WHERE CategoryID = ?";
+                try (PreparedStatement productStatement = connection.prepareStatement(productQuery)) {
+                    productStatement.setInt(1, categoryId);
+                    ResultSet productResults = productStatement.executeQuery();
+
+                    // Display products
+                    System.out.println("Products:");
+                    while (productResults.next()) {
+                        int productId = productResults.getInt("ProductID");
+                        String productName = productResults.getString("ProductName");
+                        double unitPrice = productResults.getDouble("UnitPrice");
+                        int unitsInStock = productResults.getInt("UnitsInStock");
+
+                        System.out.println("Product ID: " + productId);
+                        System.out.println("Name: " + productName);
+                        System.out.println("Price: " + String.format("%.2f", unitPrice));
+                        System.out.println("Stock: " + unitsInStock);
+                        System.out.println("------------------");
+                    }
+                }
+            }
+
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC Driver not found.");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Connection failed.");
+            e.printStackTrace();
+        }
+    }
 }
