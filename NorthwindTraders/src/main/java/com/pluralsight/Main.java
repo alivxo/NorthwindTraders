@@ -68,8 +68,7 @@ public class Main {
             // 4. Execute your query
             ResultSet results = statement.executeQuery(query);
 
-            // Option 1: Display stacked information
-            System.out.println("Option 1: Stacked Information\n");
+            System.out.println("Northwind Trader Customer Information");
             while (results.next()) {
                 String customerID = results.getString("CustomerID");
                 String companyName = results.getString("CompanyName");
